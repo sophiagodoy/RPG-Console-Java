@@ -45,4 +45,4 @@ Após explorar completamente um local, ele é marcado como **“concluído”**.
 Baixe o projeto com git clone e execute a classe Jogo.java no IntelliJ IDEA.
 
 ```bash
-git@github.com:ryandias1/RPG-Java.git
+git@github.com:sophiagodoy/RPG-Console-Java.git
