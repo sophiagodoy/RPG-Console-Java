@@ -7,51 +7,75 @@ public class Inventario implements Cloneable {
     // Cria uma lista chamada itens que vai guardar os objetos da classe Item
     private ArrayList<Item> itens;
 
-    /// Construtor padrão
+    /// Construtor com parâmetros
     // È chamado toda vez que eu crio um novo inventário, inicialmente vazio
     public Inventario() {
+        /*
+         Cria uma nova lista vazia do tipo Item.
+         'this.itens' se refere ao atributo da classe Inventario (a lista de itens deste inventário).
+         'new ArrayList<>()' inicializa essa lista para que ela possa armazenar objetos do tipo Item
+        */
         this.itens = new ArrayList<>();
     }
 
     /// Adicionar item ao inventário
-    public void adicionarItem(Item novoItem) { // Recebe um parâmetro do tipo Item, chamado novoItem
-        // Percorrendo cada item que já existe na lista "itens"
+    // Recebe um parâmetro do tipo Item, chamado novoItem
+    public void adicionarItem(Item novoItem) {
+
+        // Percorrendo todos os item que já existe na lista "itens"
         for (Item item : itens) {
 
-            // Pego o nome do item atual da lista e o que está sendo adicionado
-            // Comparo (equals) se o nome do item novo é igual ao de algum que já está na lista
-            // Transformo o nome antigo e o novo para minúsculo antes de comparar
+            /*
+             Pega o nome do item atual e o nome do novo item que está sendo adicionado
+             Transforma ambos em letras minúsculas (toLowerCase) para não dar erro com maiúsculas/minúsculas
+             e compara se os nomes são iguais usando o método equals()
+            */
             if (item.getNome().toLowerCase().equals(novoItem.getNome().toLowerCase())) {
 
-                // Se o nome for igual fazemos as somas das quantidade (antiga + nova) e atualizamos o valor somado
+                /*
+                 Se o nome for igual, quer dizer que o item já existe no inventário
+                 Então, somamos a quantidade antiga com a quantidade do novo item
+                 e atualizamos o valor total usando o método setQuantidade() da classe Item
+                */
                 item.setQuantidade(item.getQuantidade() + novoItem.getQuantidade());
-                return;
+                return; // Encerra o método imediatamente já que não precisamos retornar nada, apenas atualizar
             }
         }
+
         // Adicionado normalmente a lista
         itens.add(novoItem);
     }
 
     /// Remover um item do inventário
     public void removerItem(String nomeItem, int quantidade) {
+
         // Remove espaços em branco no início e no fim do texto (evita erro na comparação)
         nomeItem = nomeItem.trim();
 
         // Percorre a lista de itens no inventário de acordo com o tamanho dela
         for (int i = 0; i < itens.size(); i++) {
-            Item item = itens.get(i); // Pega o item atual da lista na posição i
 
-            // Verifica se o item digitado pelo jogador existe no inventário
-            // Pega o nome do item armazenado (classe Item) e o nome digitado pelo jogador, convertendo ambos para minúsculas
-            // Depois, verifica se o nome do item do inventário contém o texto digitado pelo jogador
+            // Pega o item atual da lista na posição i
+            Item item = itens.get(i);
+
+            /*
+             Verifica se o nome do item digitado existe dentro do nome de algum item do inventário
+             Transforma ambos em letras minúsculas para comparar sem erro
+             O método 'contains' verifica se o texto digitado está contido dentro do nome do item
+            */
             if (item.getNome().toLowerCase().contains(nomeItem.toLowerCase())) {
-                int novaQtd = item.getQuantidade() - quantidade; // Calcula o novo total de itens depois da remoção
 
-                // Se ainda sobrar atualiza a quantidade
+                // Calcula o novo total de itens depois da remoção e armazena na variável novaQtd
+                int novaQtd = item.getQuantidade() - quantidade;
+
+                // Se ainda sobrar itens na lista atualiza a quantidade
                 if (novaQtd > 0) {
                     item.setQuantidade(novaQtd);
-                } else {
-                    // Caso a nova quantidade seja zero ou negativa, o código remove o item inteiro do inventário
+                }
+
+                // Caso a nova quantidade de itens na lista seja zero ou negativa
+                // o código remove o item inteiro do inventário
+                else {
                     itens.remove(i);
                 }
                 return;
@@ -62,15 +86,18 @@ public class Inventario implements Cloneable {
 
     /// Listar todos os itens do inventário
     public boolean listarItens() {
+
         // Verifica se a lista itens está vazia
         if (itens.isEmpty()) {
             System.out.println("\nSeu inventário está vazio.");
             return false;
         }
 
-        // Ordena os itens da lista em ordem alfabética (sort)
-        // O Collections é uma classe do Java usada para manipular listas (como ArrayList)
-        // Aqui, ele chama automaticamente o compareTo() da classe Item, que define a comparação pelo nome do item
+        /*
+         Ordena os itens da lista em ordem alfabética (sort() → ordena a lista) "Collections" é uma classe utilitária
+         do Java que tem métodos prontos para manipular listas, como ordenar, embaralhar, inverter etc.
+         Ao chamar Collections.sort(itens), o Java usa o método compareTo() que está implementado dentro da classe Item (comparando os nomes)
+        */
         Collections.sort(itens);
 
         // Percorre a lista inteira e imprime os itens
@@ -79,34 +106,42 @@ public class Inventario implements Cloneable {
             System.out.println(item);
         }
         System.out.println("==============================");
-        return true; // Retorna true se tiver itens
+
+        // Retorna true, indicando que a listagem foi feita com sucesso
+        return true;
     }
 
     /// Verificar se está o inventário está vazio
     public boolean estaVazio() {
-        return itens.isEmpty(); // Retorna true se a lista não tiver itens, false caso contrário
+        // Retorna true se a lista não tiver itens, false caso contrário
+        return itens.isEmpty();
     }
 
     /// Verifica se o jogador tem um item específico no inventário
     public boolean temItem(String nomeItem) {
+
         // Pega o nome digitado pelo jogador, remove espaços extras e converte tudo para minúsculas (evita erros)
         nomeItem = nomeItem.trim().toLowerCase();
 
         // Percorre cada objeto da classe Item dentro da lista de itens
         for (Item item : itens) {
+
             // Pega o nome do item atual, transforma em minúsculas
             // e verifica se o texto digitado pelo jogador está contido dentro desse nome
             if (item.getNome().toLowerCase().contains(nomeItem)) {
                 return true;
             }
         }
+
+        // Se o loop terminar sem encontrar nada, retorna false
         return false;
     }
 
     // Retorna a lista completa de itens do inventário
     // Ele é usado internamente em situações como clonagem ou saque de itens de um inimigo
     public ArrayList<Item> getItens() {
-        return this.itens; // Retorna a lista armazenada dentro do inventário
+        // Retorna a lista armazenada dentro do inventário
+        return this.itens;
     }
 
     /// Clone()
@@ -114,16 +149,19 @@ public class Inventario implements Cloneable {
     // Chamamos dentro do clone o construtor de cópia do inventário, e dentro dele é que cada item é clonado individualmente
     @Override
     public Object clone() {
-        Inventario retorno = null; // Variável que vai guardar a cópia criada
+
+        // Variável que vai guardar a cópia criada.
+        // Ela começa como null para caso ocorra algum erro, ainda exista um valor seguro para retornar
+        Inventario retorno = null;
 
         try
         {
-            // Chamo o construtor de cópia, passando o próprio inventário atual (this)
+            // Chamo o construtor de cópia da classe Inventário, passando o próprio inventário atual (this)
             // Assim, é criado um novo objeto Inventario com os mesmos itens do original, mas de forma independente (alterar um não afeta o outro)
             retorno = new Inventario(this);
         }
 
-        // Esse erro quase nunca ocorre, pois o objeto atual (this) dificilmente é nulo
+        // Caso ocorra algum erro dentro do try, o catch impede que o programa quebre
         catch (Exception erro) {}
 
         // Retorna o novo Inventário criado (a cópia independente do original)
@@ -141,7 +179,8 @@ public class Inventario implements Cloneable {
         // Cria uma nova lista de itens vazia (independente da original)
         this.itens = new ArrayList<>();
 
-        // Percorre todos os itens do inventário original, e adiciona clones (chama o clone() de cada item) deles ao novo inventário
+        // Percorre todos os itens do inventário original e adiciona clones deles (chamando o clone() de cada item)
+        // Isso garante que cada item do novo inventário seja uma cópia independente do original
         for (Item item : modelo.itens)
             this.itens.add((Item)item.clone());
     }
@@ -152,3 +191,25 @@ public class Inventario implements Cloneable {
         return "Inventário com " + itens.size() + " itens.";
     }
 }
+
+/*
+    OBS:
+
+    ➤ equals() → compara se os dois textos são exatamente iguais
+      Exemplo:
+          String nome1 = "Poção de Cura";
+          String nome2 = "poção de cura";
+          nome1.equals(nome2) → false
+          (pois o segundo começa com letra minúscula)
+
+    ➤ contains() → verifica se um texto está contido dentro de outro
+      Exemplo:
+          String nome1 = "Poção de Cura";
+          String nome2 = "cura";
+          nome1.contains(nome2) → true
+          (pois "cura" aparece dentro de "Poção de Cura")
+
+    Resumo:
+      • equals → igualdade total (mesmo texto)
+      • contains → busca parcial (parte do texto)
+*/

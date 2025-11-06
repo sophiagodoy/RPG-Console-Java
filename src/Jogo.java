@@ -11,6 +11,7 @@ public class Jogo {
         // Cria um objeto chamado br que serve para ler o que o jogador digita no console
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
+        /// INÍCIO OFICIAL DO JOGO
         // Exibe a história introdutória e o objetivo principal do jogo
         System.out.println("Bem-vindo ao Reino de Aurora!");
         System.out.println("Há séculos, o reino viveu em paz... até que o temido dragão Rex despertou.");
@@ -18,14 +19,20 @@ public class Jogo {
         System.out.println("\nSeu objetivo: descobrir onde o dragão está escondido e derrotá-lo para restaurar a paz em Aurora!");
         System.out.println("Mas cuidado... o caminho até ele é cheio de armadilhas e inimigos poderosos.\n");
 
-        Inventario inventarioInicial = new Inventario(); // Cria um inventário vazio
-        Personagem jogador = null; // Cria uma variável jogador, que será definida depois (quando o jogador escolher a classe)
+        // Cria um inventário vazio para começar o jogo
+        Inventario inventarioInicial = new Inventario();
+
+        // Cria uma variável jogador, que será definida depois (quando o jogador escolher a classe (o que deseja ser))
+        Personagem jogador = null;
+
+        // È uma variável de controle pra manter o loop de escolha ativo até o jogador decidir
         boolean escolhaClasse = true;
 
-        // Escolha do Pesonagem
+        /// ESCOLHA DO PERSONAGEM
+        // Continua rodando até o jogador escolher uma classe válida
         while (escolhaClasse == true) {
 
-            /// Personagens e suas características
+            /// PERSONAGENS E SUAS CARACTERÍSTICAS
             System.out.println("\nEscolha seu personagem");
             System.out.println("1 - Guerreiro");
             System.out.println("Alta vida (60 HP), boa defesa (10), ataque equilibrado (12).");
@@ -49,46 +56,56 @@ public class Jogo {
                 jogador = new Guerreiro("Guerreiro", (short) 60, (short) 12, (short) 10, (short) 1, inventarioInicial);
                 System.out.println("\nVocê escolheu ser um Guerreiro!");
                 escolhaClasse = false;
+
             } else if (opcao == 2) {
                 // Cria um objeto do tipo Mago com os seus atributos
                 jogador = new Mago("Mago", (short) 45, (short) 15, (short) 7, (short) 1, inventarioInicial);
                 System.out.println("\nVocê escolheu ser um Mago!");
                 escolhaClasse = false;
+
             } else if (opcao == 3) {
                 // Cria um objeto do tipo Arqueiro com os seus atributos
                 jogador = new Arqueiro("Arqueiro", (short) 50, (short) 13, (short) 8, (short) 1, inventarioInicial);
                 System.out.println("\nVocê escolheu ser um Arqueiro!");
                 escolhaClasse = false;
+
             } else {
                 System.out.println("Opção inválida. Tente novamente!");
             }
         }
 
-        /// Mostra status iniciais do personagem
+        /// MOSTRA STATUS INICIAIS DO PERSONAGEM
         System.out.println("\n=== Status do Personagem ===");
         System.out.println(jogador);
         System.out.println("============================");
 
+        // Verifica se o personagem escolheu alguma classe
         if (jogador == null) {
             System.out.println("Erro: Nenhum personagem foi selecionado. Encerrando o jogo.");
-            return;
+            return; // Retorna ao método main
         }
 
-        // Início direto da exploração (sem menu principal)
+        /// INÍCIO DA EXPLORAÇÃO
         System.out.println("\nSua jornada começa agora...");
-        explorar(jogador, br);
+        explorar(jogador, br); // Chama o método explorar
     }
 
     /// EXPLORAR UM LUGAR
+    // Controla todo o sistema de exploração (floresta, caverna, vila e montanha)
     public static void explorar(Personagem jogador, BufferedReader br) throws IOException {
+
+        // Variável que mantém o loop da exploração ativo
         boolean explorando = true;
 
-        // Salvar se o lugar ja foi ou não explorado
+        /*
+         Essas variáveis controlam o progresso do jogador
+         Se um lugar já foi visitado, ele vira true
+         Assim, o jogo não repete eventos (ex: não dá o mesmo item ou batalha duas vezes)
+        */
         boolean florestaExplorada = false;
         boolean trilhaEsquerdaExplorada = false;
         boolean trilhaCentralExplorada = false;
         boolean trilhaDireitaExplorada = false;
-
 
         boolean cavernaExplorada = false;
         boolean tunelPrincipalExplorado = false;
@@ -99,6 +116,7 @@ public class Jogo {
 
         boolean montanhaExplorada = false;
 
+        /// MENU PRINCIPAL DA EXPLORAÇÃO
         while (explorando) {
             System.out.println("\n=== Lugares para explorar ===");
             System.out.println("1 - Floresta Nebulosa");
@@ -108,15 +126,19 @@ public class Jogo {
             System.out.println("5 - Voltar ao menu principal");
             System.out.print("Escolha para onde ir: ");
 
+            // Lê o número digitado pelo jogador e converte o texto digitado (String) em número inteiro (int)
             int opcao = Integer.parseInt(br.readLine());
 
             /// FLORESTA NEBULOSA
             if (opcao == 1) {
+
+                // Verifica se o jogador já explorou antes
                 if (florestaExplorada) {
                     System.out.println("\nVocê já explorou completamente a Floresta Nebulosa. Não há mais nada de novo por aqui.");
-                    continue;
+                    continue; // Volta ao menu principal
                 }
 
+                // Define que o jogador está atualmente explorando a floresta
                 boolean explorandoFloresta = true;
 
                 System.out.println("\nVocê entrou na Floresta Nebulosa.");
@@ -126,9 +148,11 @@ public class Jogo {
                 System.out.println("\nStatus atual antes de explorar:");
                 System.out.println(jogador);
 
+                // Enquanto o jogador estiver dentro da floresta
                 while (explorandoFloresta) {
                     System.out.println("\n=== Trilhas da Floresta Nebulosa ===");
 
+                    // Exibe apenas as trilhas que ainda não foram exploradas
                     if (!trilhaEsquerdaExplorada)
                         System.out.println("1 - Seguir pela trilha da esquerda");
                     if (!trilhaCentralExplorada)
@@ -138,75 +162,101 @@ public class Jogo {
 
                     System.out.println("4 - Sair da floresta");
                     System.out.print("Escolha o caminho: ");
+
+                    // Lê o número digitado pelo jogador e converte o texto digitado (String) em número inteiro (int)
                     int escolha = Integer.parseInt(br.readLine());
 
                     /// TRILHA ESQUERDA
+                    // Nessa trilha o jogador enfrenta um zumbi
                     if (escolha == 1 && !trilhaEsquerdaExplorada) {
                         System.out.println("\nVocê segue pela trilha da esquerda...");
                         System.out.println("Das sombras surge um zumbi!");
+
+                        // Cria um inimigo do tipo Zumbi e inicia a batalha (chama o método batalhar)
                         Inimigo zumbi = new Inimigo("Zumbi", (short) 20, (short) 8, (short) 3, (short) 1, new Inventario());
                         batalhar(jogador, zumbi, br, "Floresta Nebulosa");
-                        trilhaEsquerdaExplorada = true;
+
+                        trilhaEsquerdaExplorada = true; // Marca como explorada
                     }
 
                     /// TRILHA CENTRAL
+                    // O jogador encontra um altar mágico e ganha aumento de HP máximo
                     else if (escolha == 2 && !trilhaCentralExplorada) {
                         System.out.println("\nVocê encontra um pequeno altar coberto por musgo e inscrições antigas...");
                         System.out.println("Um estranho brilho verde emana das pedras... parece reagir à sua presença.");
 
                         System.out.println("Você se aproxima e toca o altar...");
-                        System.out.println("De repente, uma luz intensa envolve sua mão e um objeto se materializa diante de você!\n1");
+                        System.out.println("De repente, uma luz intensa envolve sua mão e um objeto se materializa diante de você!\n");
 
+                        // O personagem recebe uma benção: aumenta a vida máxima em 10
                         jogador.vidaMax += 10;
+
                         System.out.println("Você recebeu a bênção do Amuleto da Floresta!");
                         System.out.println("Seu HP máximo aumentou em 10 pontos!");
                         System.out.println("HP: " + jogador.pontosVida + "/" + jogador.vidaMax);;
 
-                        trilhaCentralExplorada = true;
+                        trilhaCentralExplorada = true; // Marca como explorada
                     }
 
                     /// TRILHA DIREITA
+                    // O jogador é atacado por um lobo sombrio
                     else if (escolha == 3 && !trilhaDireitaExplorada) {
                         System.out.println("\nVocê tenta sair rapidamente da trilha...");
                         System.out.println("Mas uma fera te avista e ataca!");
+
+                        // Cria um inimigo do tipo Lobo Sombrio e inicia a batalha (chama o método batalhar)
                         Inimigo lobo = new Inimigo("Lobo Sombrio", (short) 45, (short) 10, (short) 4, (short) 1, new Inventario());
                         batalhar(jogador, lobo, br, "Floresta Nebulosa");
-                        trilhaDireitaExplorada = true;
-                    } else if (escolha == 4) {
+
+                        trilhaDireitaExplorada = true; // Marca como explorada
+                    }
+
+                    /// SAIR DA FLORESTA
+                    else if (escolha == 4) {
                         System.out.println("Você deixa a floresta para trás por enquanto.");
-                        explorandoFloresta = false;
-                    } else {
+                        explorandoFloresta = false; // Sai do loop da floresta
+                    }
+
+                    /// OPÇÃO INVÁLIDA
+                    else {
                         System.out.println("Opção inválida ou trilha já explorada.");
                     }
 
-                    // Se todas as trilhas foram exploradas
+                    // Se todas as trilhas foram exploradas, a floresta é concluída
                     if (trilhaEsquerdaExplorada && trilhaCentralExplorada && trilhaDireitaExplorada) {
                         System.out.println("\nVocê explorou todas as trilhas da Floresta Nebulosa!");
                         System.out.println("Nada mais resta neste lugar misterioso...");
-                        florestaExplorada = true;
-                        explorandoFloresta = false;
+
+                        florestaExplorada = true; // Marca como concluída no mapa geral
+                        explorandoFloresta = false; // Sai da floresta
                     }
                 }
             }
 
             /// CAVERNA DAS SOMBRAS
             else if (opcao == 2) {
+
+                // Verifica se o jogador já explorou antes
                 if (cavernaExplorada) {
                     System.out.println("\nVocê já explorou completamente a Caverna das Sombras. O silêncio reina no subsolo...");
-                    continue;
+                    continue; // Volta ao menu principal
                 }
 
+                // Define que o jogador está atualmente explorando a caverna
                 boolean explorandoCaverna = true;
 
                 System.out.println("\nVocê entrou na Caverna das Sombras.");
                 System.out.println("O ar é pesado e o som de gotas d'água ecoa pelas paredes úmidas...\n");
 
+                // Mostra status atual antes de começar a exploração
                 System.out.println("\nStatus atual antes de explorar:");
                 System.out.println(jogador);
 
+                // Enquanto o jogador estiver dentro da caverna
                 while (explorandoCaverna) {
                     System.out.println("\n=== Setores da Caverna das Sombras ===");
 
+                    // Mostra apenas as partes que ainda não foram exploradas
                     if (!tunelPrincipalExplorado)
                         System.out.println("1 - Seguir pelo túnel principal");
                     if (!salaCristaisExplorada)
@@ -216,90 +266,121 @@ public class Jogo {
 
                     System.out.println("4 - Sair da caverna");
                     System.out.print("Escolha: ");
+
+                    // Lê o número digitado pelo jogador e converte o texto digitado (String) em número inteiro (int)
                     int escolha = Integer.parseInt(br.readLine());
 
                     /// TÚNEL PRINCIPAL
+                    // O jogador enfrenta um Troll das Sombras
                     if (escolha == 1 && !tunelPrincipalExplorado) {
                         System.out.println("\nVocê avança pelo túnel principal...");
                         System.out.println("Do escuro surge um enorme Troll das Sombras!");
+
+                        // Cria o inimigo Troll e inicia a batalha (chama o método batalhar)
                         Inimigo troll = new Inimigo("Troll das Sombras", (short) 30, (short) 12, (short) 6, (short) 2, new Inventario());
                         batalhar(jogador, troll, br, "Caverna das Sombras");
-                        tunelPrincipalExplorado = true;
+
+                        tunelPrincipalExplorado = true; // Marca como explorado
                     }
 
                     /// SALA DOS CRISTAIS
+                    // O jogador ganha um item mágico que aumenta seu ataque
                     else if (escolha == 2 && !salaCristaisExplorada) {
                         System.out.println("\nVocê entra em uma câmara iluminada por cristais azuis pulsantes...");
                         System.out.println("Ao se aproximar, um deles se destaca e flutua até sua mão!");
 
+                        // Cria o item e adiciona ao inventário
                         Item cristal = new Item("Cristal das Sombras", "Emite energia mágica intensa", "+15 ataque", 1);
                         jogador.inventario.adicionarItem(cristal);
+
                         System.out.println("Você obteve: " + cristal.getNome() + "! Seu corpo vibra com poder arcano...");
+
+                        // Aumenta o ataque do personagem
                         jogador.ataque += 15;
                         System.out.println("Seu ataque máximo aumentou! Ataque atual: " + jogador.ataque);
 
+                        // Mostra status após o ganho do cristal
                         System.out.println("\n=== Status Atual Após o Ganho do Cristal ===");
                         System.out.println(jogador);
                         System.out.println("============================================");
 
-                        salaCristaisExplorada = true;
+                        salaCristaisExplorada = true; // Marca como explorado
                     }
 
                     /// LAGO SUBTERRÂNEO
+                    // O jogador enfrenta a Serpente das Profundezas
                     else if (escolha == 3 && !lagoSubterraneoExplorado) {
                         System.out.println("\nVocê chega a um lago subterrâneo de águas negras...");
                         System.out.println("Algo se move sob a superfície, uma Serpente das Profundezas aparece!");
 
+                        // Cria a inimiga Serpente e inicia a batalha (chama o método batalhar)
                         Inimigo serpente = new Inimigo("Serpente das Profundezas", (short) 35, (short) 14, (short) 5, (short) 2, new Inventario());
                         batalhar(jogador, serpente, br, "Caverna das Sombras");
-                        lagoSubterraneoExplorado = true;
-                    } else if (escolha == 4) {
+
+                        lagoSubterraneoExplorado = true;// Marca como explorado
+                    }
+
+                    /// SAIR DA CAVERNA
+                    else if (escolha == 4) {
                         System.out.println("Você sai da caverna e volta para a superfície.");
-                        explorandoCaverna = false;
-                    } else {
+                        explorandoCaverna = false; // Sai do loop da caverna
+                    }
+
+                    /// OPÇÃO INVÁLIDA
+                    else {
                         System.out.println("Opção inválida ou setor já explorado.");
                     }
 
-                    // Quando todas as partes forem exploradas
+                    // Verifica se todas as áreas da caverna foram visitadas
                     if (tunelPrincipalExplorado && salaCristaisExplorada && lagoSubterraneoExplorado) {
                         System.out.println("\nVocê explorou todos os setores da Caverna das Sombras!");
                         System.out.println("Nada mais resta nas profundezas...");
-                        cavernaExplorada = true;
-                        explorandoCaverna = false;
+
+                        cavernaExplorada = true; // Marca a caverna como concluída no mapa principal
+                        explorandoCaverna = false; // Sai do loop de exploração
                     }
                 }
             }
 
             /// VILA ABANDONADA
+            // O jogador encontra com uma forte explosão
             else if (opcao == 3) {
+
+                // Verifica se o jogador já explorou antes
                 if (vilaExplorada) {
                     System.out.println("\nVocê já passou pela Vila Abandonada. O silêncio permanece... nada mais pode ser feito aqui.");
-                    continue; // volta para o menu de exploração
+                    continue; // Volta ao menu principal
                 }
 
                 System.out.println("\nVocê chega à Vila Abandonada...");
 
+                // Mostra status atual do personagem antes de explorar
                 System.out.println("\nStatus atual antes de explorar:");
                 System.out.println(jogador);
 
+                // Descrição narrativa da vila
                 System.out.println("As casas estão em ruínas e há marcas de magia nas paredes...");
                 System.out.println("Um frio percorre sua espinha... a energia sombria ainda paira no ar.");
                 System.out.println("De repente, uma explosão mágica atinge o chão perto de você!");
                 System.out.println("Você é lançado para trás e sente uma forte dor no peito...");
 
+                // O jogador perde 15 pontos de vida por causa da explosão
                 jogador.pontosVida -= 15;
 
+                // Garante que a vida nunca fique negativa (ela zero se ficar negativo)
                 if (jogador.pontosVida < 0) {
                     jogador.pontosVida = 0;
                 }
 
                 System.out.println("Você perdeu 15 pontos de vida! HP atual: " + jogador.pontosVida);
 
-                // Se o jogador morrer com o golpe
+                // Caso o jogador morra com o golpe
                 if (!jogador.estaVivo()) {
                     System.out.println("\nA energia maligna consome suas forças...");
                     System.out.println("Você cai de joelhos e tudo escurece...");
                     System.out.println("Fim de jogo!");
+
+                    // Encerra o jogo
                     System.exit(0);
                 }
 
@@ -310,36 +391,46 @@ public class Jogo {
                 System.out.println(jogador);
                 System.out.println("=====================================\n");
 
-                vilaExplorada = true; // marca como já explorada
+                vilaExplorada = true; // Marca como já explorada
             }
 
             /// MONTANHA SOMBRIA
+            // Finalmente encontra o dragão Rex
             else if (opcao == 4) {
+
+                // Impede o jogador de enfrentar o dragão mais de uma vez
                 if (montanhaExplorada) {
                     System.out.println("\nVocê já enfrentou o que havia na Montanha Sombria. O eco distante do dragão é tudo que resta...");
-                    continue; // impede de entrar novamente
+                    continue; // Volta ao menu principal
                 }
 
                 System.out.println("\nVocê chegou à Montanha Sombria. O ar é pesado e o chão treme sob seus pés...");
 
+                // Mostra status atual antes da batalha final
                 System.out.println("\nStatus atual antes da batalha final:");
                 System.out.println(jogador);
 
                 System.out.println("O dragão Rex te aguarda no topo da montanha!");
 
+                // Cria o inimigo final, o dragão Rex e faz a batalha (chama o método batalhar)
                 Inimigo dragao = new Inimigo("Rex", (short) 90, (short) 20, (short) 10, (short) 5, new Inventario());
                 batalhar(jogador, dragao, br, "Montanha Sombria");
 
+                // Mensagem de vitória final
                 System.out.println("\nAs chamas do dragão se apagam lentamente... você venceu uma batalha lendária!");
                 System.out.println("O Reino de Aurora está finalmente livre do terror de Rex.");
-                montanhaExplorada = true; // marca como já explorada
+
+                montanhaExplorada = true; // Marca como já explorada
             }
 
-            /// SAIR
+            /// SAIR DA EXPLORAÇÃO
             else if (opcao == 5) {
                 System.out.println("\nVocê retorna ao menu principal.");
-                explorando = false;
-            } else {
+                explorando = false; // Sai do loop principal de exploração
+            }
+
+            /// OPÇÃO INVÁLIDA
+            else {
                 System.out.println("Opção inválida. Tente novamente.");
             }
         }
@@ -347,9 +438,11 @@ public class Jogo {
 
     /// BATALHAR CONTRA UM INIMIGO
     public static boolean batalhar(Personagem jogador, Inimigo inimigo, BufferedReader br, String local) throws IOException {
+
+        // Mostra o nome do inimigo em destaque antes da luta
         System.out.println("\n===BATALHA CONTRA " + inimigo.nome.toUpperCase() + " ===");
 
-        // Mostra status iniciais antes da luta
+        /// MOSTRA STATUS INICIAIS ANTES DA LUTA
         System.out.println("\n   Você:");
         System.out.println("   Vida: " + jogador.pontosVida);
         System.out.println("   Vida Máx: " + jogador.vidaMax);
@@ -364,62 +457,142 @@ public class Jogo {
         System.out.println("   Defesa: " + inimigo.defesa);
         System.out.println("\nPrepare-se para o combate!\n");
 
+        // Inicia a batalha chamando o método 'batalhar' da classe Personagem e armazena o resultado da batalha na variável venceu
         boolean venceu = jogador.batalhar(inimigo, br, local);
 
+        /// SE O JOGADOR PERDER
         // Verifica se o jogador ficou sem vida após a luta
         if (!jogador.estaVivo()) {
             System.out.println("\nVocê foi derrotado... o Reino de Aurora cai nas sombras.");
             System.out.println("Fim de jogo!");
+
+            // Encerra o jogo
             System.exit(0);
         }
 
+        /// SE O JOGADOR VENCER
         if (venceu) {
             System.out.println("Você vasculha o corpo do inimigo em busca de algo útil...");
 
-            // Sistema de Drop Aleatório (sistema de sorteio para gerar números ou resultados aleatórios)
+            // Objeto sorteador de um número aleatório
+            /*
+             Aqui você está criando um objeto da classe Random
+             Essa classe é da biblioteca java.util e serve para gerar números aleatórios
+             Obs: È como se fosse um dado invisível que o computador pode rolar para você sempre que quiser um número novo e imprevisível
+            */
             Random random = new Random();
-            boolean dropou = random.nextBoolean(); // Rola o dado para ver se encontra algo (50% chance)
 
-            // Se tiver sorte de encontrar algo
+            // Gera um valor aleatório do tipo boolean, ou seja, true ou false (50% de ser true e 50% de ser false)
+            boolean dropou = random.nextBoolean();
+
+            // Se tiver sorte de encontrar algo (dropou = true)
             if (dropou) {
-                int sorteio = random.nextInt(6) + 1;// Sorteia um número aleatória de 1 a 6
-                Item itemDropado; // Cria uma variável do tipo Item que vai guardar o item que o jogador ganhar
+                // Gerando o número aleatório
+                /*
+                 Gero um dado de 6 lados ((6-1) + 1), ou seja, pode ser sorteado um número aleatório de 1 a 6
+                 O valor sorteado é armazenado na variável sorteio
+                */
+                int sorteio = random.nextInt(6) + 1;
 
-                // Menu de possibilidade
+                // Cria uma variável do tipo Item que vai guardar o item que o jogador ganhar
+                Item itemDropado;
+
+                // Escolhe o item conforme o número sorteado
+                /*
+                 O comando switch verifica o valor da variável 'sorteio' (entre 1 e 6)
+                 e executa o bloco de código correspondente ao número sorteado
+                */
                 switch (sorteio) {
                     case 1:
-                        itemDropado = new Item("Poção de Cura", "Recupera vida", "+20 HP", 1);
+                        itemDropado = new Item(
+                                "Poção de Cura",
+                                "Recupera vida",
+                                "+20 HP",
+                                1
+                        );
                         break;
                     case 2:
-                        itemDropado = new Item("Raiz de Mirtilha", "Recupera vida", "+8 HP", 1);
+                        itemDropado = new Item(
+                                "Raiz de Mirtilha",
+                                "Recupera vida",
+                                "+8 HP",
+                                1
+                        );
                         break;
                     case 3:
-                        itemDropado = new Item("Amuleto Guardião", "Fornece alta proteção", "+20 defesa", 1);
+                        itemDropado = new Item(
+                                "Amuleto Guardião",
+                                "Fornece alta proteção",
+                                "+20 defesa",
+                                1
+                        );
                         break;
                     case 4:
-                        itemDropado = new Item("Escudo Velho", "Fornece leve proteção", "+5 defesa", 1);
+                        itemDropado = new Item(
+                                "Escudo Velho",
+                                "Fornece leve proteção",
+                                "+5 defesa",
+                                1
+                        );
                         break;
                     case 5:
-                        itemDropado = new Item("Orbe do Desespero", "Libera uma onda de energia que causa dano aos inimigos", "8 de dano ao inimigo", 1);
+                        itemDropado = new Item(
+                                "Orbe do Desespero",
+                                "Libera uma onda de energia que causa dano aos inimigos",
+                                "8 de dano ao inimigo",
+                                1
+                        );
                         break;
                     case 6:
-                        itemDropado = new Item("Poção de Fúria", "Uma poção que aumenta a força", "+12 ataque", 1);
+                        itemDropado = new Item(
+                                "Poção de Fúria",
+                                "Uma poção que aumenta a força",
+                                "+12 ataque",
+                                1
+                        );
                         break;
-                    default:
-                        itemDropado = new Item("Item Desconhecido", "Você não sabe o que é isso", "???", 1);
+                    default: // Se nenhum dos cases anteriores for correspondido (verdadeiro) é executado esse pedaço
+                        itemDropado = new Item(
+                                "Item Desconhecido",
+                                "Você não sabe o que é isso",
+                                "???",
+                                1
+                        );
                 }
 
+                // Mostra o item obtido e adiciona ao inventário do jogador
                 System.out.println("O inimigo deixou cair: " + itemDropado.getNome() + "!");
                 jogador.inventario.adicionarItem(itemDropado);
             } else {
                 System.out.println("O inimigo não deixou nenhum item para trás.");
             }
 
-            // --- CHANCE RARA DE PEGAR UM ITEM EXTRA DO INVENTÁRIO DO INIMIGO ---
+            /// CHANCE RARA DE ITEM EXTRA (10%)
+            /*
+             * Além do drop normal, há uma chance de 10% de encontrar um item
+             * extra no inventário do inimigo. Isso simula uma recompensa rara.
+            */
+
+            // Objeto sorteador de um número aleatório
+            /*
+             Aqui você está criando um objeto da classe Random
+             Essa classe é da biblioteca java.util e serve para gerar números aleatórios
+             Obs: È como se fosse um dado invisível que o computador pode rolar para você sempre que quiser um número novo e imprevisível
+            */
             Random chanceExtra = new Random();
+
+            // Gerando o número aleatório
+            /*
+             Gero um dado de 100 lados ((100-1) + 1), ou seja, pode ser sorteado um número aleatório de 1 a 100
+             O valor sorteado é armazenado na variável rolagemExtra
+            */
             int rolagemExtra = chanceExtra.nextInt(100) + 1; // de 1 a 100
-            // Apenas 10% de chance de o jogador encontrar algo a mais
+
+            // Se o número sorteado for menor ou igual a 10, significa que o jogador teve 10% de chance de sorte
+            // Garante que o inimigo tem um inventário criado (ou seja, não é null)
+            // Verifica se o inventário não está vazio (! = negação)
             if (rolagemExtra <= 10 && inimigo.inventario != null && !inimigo.inventario.estaVazio()) {
+
                 try {
                     // Clona o inventário do inimigo
                     Inventario inventarioClonado = (Inventario) inimigo.inventario.clone();
@@ -437,6 +610,11 @@ public class Jogo {
                 }
             }
 
+            /// GANHO DE NÍVEL (XP)
+            /*
+             * O jogador ganha experiência proporcional à dificuldade do inimigo.
+             * Inimigos mais fortes (como o Dragão Rex) concedem mais níveis.
+            */
             int niveisGanho;
 
             if (inimigo.nome.contains("Rex")) {
@@ -451,17 +629,19 @@ public class Jogo {
                 niveisGanho = 1;
             }
 
-            // Chama o método subirNivel da classe Personagem
+            // Aumenta o nível do jogador (chama o método subirNivel)
             jogador.subirNivel(niveisGanho);
 
             // Mostra status atualizado do jogador após a luta
             System.out.println("\nSeu estado atual após a batalha:");
             System.out.println(jogador);
         }
+
+        // Retorna o resultado da batalha (true = venceu, false = perdeu/fugiu)
         return venceu;
     }
 
-    /// Usar um item do inventário
+    /// USAR ITEM
     public static void usarItem(Personagem jogador, Personagem inimigo, BufferedReader br) throws IOException {
 
         // Verifica se o inventário está vazio
@@ -469,7 +649,7 @@ public class Jogo {
             System.out.println("Seu inventário está vazio!");
             System.out.println("Você não pode usar nenhum item agora.");
             System.out.println("=======================");
-            return;
+            return; // Encerra o método
         }
 
         // Mostra todos os itens disponíveis
@@ -477,18 +657,33 @@ public class Jogo {
 
         // Solicita o nome do item que o jogador quer usar
         System.out.print("Digite o nome do item que deseja usar: ");
-        String nomeItem = br.readLine().trim().toLowerCase(); // Converte tudo para minúsculo para facilitar a comparação
+
+        // Converte tudo para minúsculo para facilitar a comparação
+        String nomeItem = br.readLine().trim().toLowerCase();
 
         // Verifica se o item realmente existe no inventário
         if (!jogador.inventario.temItem(nomeItem)) {
             System.out.println("Esse item não está no seu inventário!");
-            return;
+            return; // Se não tiver, encerra o método.
         }
 
-        // Cria um número aleatório (1 a 6) para definir o sucesso do uso
+        // Objeto sorteador de um número aleatório
+        /*
+         Aqui você está criando um objeto da classe Random
+         Essa classe é da biblioteca java.util e serve para gerar números aleatórios
+         Obs: È como se fosse um dado invisível que o computador pode rolar para você sempre que quiser um número novo e imprevisível
+        */
         Random random = new Random();
+
+        // Gerando o número aleatório
+        /*
+         Gero um dado de 6 lados ((6-1) + 1), ou seja, pode ser sorteado um número aleatório de 1 a 6
+         O valor sorteado é armazenado na variável sorteio
+        */
         int dado = random.nextInt(6) + 1;
-        boolean sucesso = dado >= 4; // Sucesso se tirar 4, 5 ou 6
+
+        // Sucesso se tirar 4, 5 ou 6
+        boolean sucesso = dado >= 4;
 
         // Caso o jogador consiga usar o item com sucesso
         if (sucesso) {
@@ -534,6 +729,7 @@ public class Jogo {
             }
 
             /// ITENS LENDÁRIOS
+            // São muito poderosos, dando grandes bônus de ataque, defesa ou vida
             else if (nomeItem.contains("espada do crepúsculo") || nomeItem.contains("espada do crepusculo")) {
                 jogador.ataque += 30;
                 System.out.println("O poder do crepúsculo flui através de você! +30 de ataque. Ataque atual: " + jogador.ataque + "\n");
@@ -554,21 +750,28 @@ public class Jogo {
             /// ITEM DE EFEITO ALEATÓRIO
             else if (nomeItem.contains("relíquia") || nomeItem.contains("reliquia")) {
 
-                // sorteia o efeito (números 0, 1 ou 2)
+                // Gerando o número aleatório
+                /*
+                 Gero um dado de 3 lados ((3-1) + 1), ou seja, pode ser sorteado um número aleatório de 1 a 3
+                 O valor sorteado é armazenado na variável efeito
+                */
                 int efeito = random.nextInt(3);
 
                 switch (efeito) {
                     case 0:
                         jogador.ataque += 10;
+
                         System.out.println("Um poder estranho aumenta seu ataque em +10!\n");
                         break;
                     case 1:
                         jogador.defesa += 10;
+
                         System.out.println("Uma energia misteriosa fortalece sua defesa em +10!\n");
                         break;
                     case 2:
                         jogador.vidaMax += 30; // aumenta o limite
                         jogador.curar((short) 30); // cura até esse novo máximo
+
                         System.out.println("Você sente uma força vital inexplicável! +30 de Vida Máxima.");
                         System.out.println("HP atual: " + jogador.pontosVida + "/" + jogador.vidaMax + "\n");
                         break;
@@ -580,11 +783,11 @@ public class Jogo {
                 System.out.println("Você usa o item, mas nada acontece... talvez seu poder ainda seja desconhecido.\n");
             }
 
-            // Ao final, remove 1 unidade do item utilizado
+            // Remove uma unidade do item usado (caso o jogador tenha mais de uma)
             jogador.inventario.removerItem(nomeItem, 1);
         }
 
-        // Caso o uso do item falhe (rolagem do dado ruim)
+        // Caso o nome do item não bata com nenhum dos casos anteriores
         else {
             System.out.println("\nVocê tenta usar o item, mas falha miseravelmente!\n");
         }
@@ -609,13 +812,25 @@ public class Jogo {
             System.out.println("Você foi engolido pelas chamas do dragão Rex...");
             System.out.println("O Reino de Aurora cai nas sombras mais uma vez.");
             System.out.println("Fim de jogo.");
+
+            // Encerra o jogo
             System.exit(0);
             return;
         }
 
-        // Caso comum: fugas de outros inimigos
-        // Cria um número aleatório de 1 a 6
+        // Objeto sorteador de um número aleatório
+        /*
+         Aqui você está criando um objeto da classe Random
+         Essa classe é da biblioteca java.util e serve para gerar números aleatórios
+         Obs: È como se fosse um dado invisível que o computador pode rolar para você sempre que quiser um número novo e imprevisível
+        */
         Random random = new Random();
+
+        // Gerando o número aleatório
+        /*
+         Gero um dado de 6 lados ((6-1) + 1), ou seja, pode ser sorteado um número aleatório de 1 a 6
+         O valor sorteado é armazenado na variável sorteio
+        */
         int rolagem = random.nextInt(6) + 1;
 
         // Determina onde o jogador se esconde e mostra uma descrição diferente para cada lugar
@@ -639,8 +854,10 @@ public class Jogo {
         if (rolagem % 2 == 0) {
             System.out.println("Você respira aliviado e continua sua jornada.");
             System.out.println("Você consegue escapar com sucesso!");
-        } else {
-            // Se o número foi ímpar, o jogador tropeça e leva um golpe antes de fugir
+        }
+
+        // Se o número foi ímpar, o jogador tropeça e leva um golpe antes de fugir
+        else {
             System.out.println("Você tropeça ao tentar fugir!");
             System.out.println("O inimigo te alcança e acerta um golpe antes de você escapar!");
 
@@ -660,9 +877,13 @@ public class Jogo {
             if (!jogador.estaVivo()) {
                 System.out.println("\nVocê não resistiu ao golpe durante a fuga...");
                 System.out.println("Fim de jogo!");
+
+                // Encerra o jogo
                 System.exit(0);
-            } else {
-                // Caso sobreviva
+            }
+
+            // Caso sobreviva
+            else {
                 System.out.println("Mesmo ferido, você consegue se afastar do perigo.");
                 System.out.println("Você respira aliviado e continua sua jornada.");
                 System.out.println("Você consegue escapar com sucesso!");
